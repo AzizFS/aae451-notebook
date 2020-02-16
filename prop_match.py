@@ -39,7 +39,7 @@ R_motor = syms.declare(name='R motor', desc='Motor resistance', value=0.1, lower
 Kv_motor = syms.declare(name='Kv_motor', desc='Motor constant', value=1000, lower=100, upper=20000, unit='rpm/volt')
 i0_motor = syms.declare(name='i0_motor', desc='No load current', value=0, lower=0, upper=100, unit='rpm/volt')
 v_batt = syms.declare(name='v_batt', desc='Battery voltage', value=11.1, lower=3, upper=12, unit='volt')
-V_inf = syms.declare(name='V_inf', desc='Freestream velocity', value=1, lower=0, upper=10, unit='volt')
+V_inf = syms.declare(name='V_inf', desc='Freestream velocity', value=1, lower=0, upper=10, unit='m/s') ## should value be changed?
 rho = syms.declare(name='rho', desc='air density', value=1.225, lower=1, upper=2, unit='kg/m^3')
 CT = syms.declare(name='CT', desc='Motor thrust constant', value=0, lower=0, upper=10, unit='')
 CP = syms.declare(name='CP', desc='Motor torque constant', value=0, lower=0, upper=0, unit='') ## lower = upper??
@@ -70,10 +70,10 @@ Q_prop = q_prop*A_prop*r_prop*CP  # torque of prop
 
 
 #%%
-def solve_nlp(prop_name, thrust, velocity):
+def solve_nlp(prop_name, thrust):
     rho0 = 1.225
     i0_motor0 = 0.04
-    V_inf0 = velocity  ### Velocity constraint
+    V_inf0 = 1
     R_motor0 = 0.05
     T_desired = thrust   #### Thrust constraint
 
@@ -199,10 +199,10 @@ def rpm_sweep(prop_name, v0, kv0, i0_motor0, V_inf0, R_motor0):
 
 #%%
 
-def out(thrust, velocity):
+def out(thrust):
     sb.call(['rm','propstuff/efficiency.xlsx'])
     for prop_name in prop_db.keys():
-        res, stats = solve_nlp(prop_name, thrust, velocity)
+        res, stats = solve_nlp(prop_name, thrust)
 
 def store(data):
     f = 'propstuff/efficiency.xlsx'
